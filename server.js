@@ -40,7 +40,10 @@ app.get(`${publicEndpoint}/heroes/:id`, (req, res) => {
 
 // Save a new secret hero
 app.post(`${publicEndpoint}/heroes`, (req, res) => {
-  const lastHero = publicHeroes[publicHeroes.length - 1].id;
+  let lastHero = 0;
+  if (publicHeroes[publicHeroes.length - 1]) {
+    lastHero = publicHeroes[publicHeroes.length - 1].id;
+  }
 
   const hero = {
     id: lastHero + 1,
@@ -87,8 +90,10 @@ app.get(`${secretEndpoint}/heroes/:id`, authCheck, (req, res) => {
 
 // Save a new secret hero
 app.post(`${secretEndpoint}/heroes`, authCheck, (req, res) => {
-  const lastHero = secretHeroes[secretHeroes.length - 1].id;
-
+  let lastHero = 0;
+  if (secretHeroes[secretHeroes.length - 1]) {
+    lastHero = secretHeroes[secretHeroes.length - 1].id;
+  }
   const hero = {
     id: lastHero + 1,
     name: req.body.name
@@ -114,5 +119,5 @@ app.delete(`${secretEndpoint}/heroes/:id`, authCheck, (req, res) => {
   res.json({ message: 'Hero deleted' });
 });
 
-app.listen(3001);
-console.log('Listening on localhost:3001');
+app.listen(3002);
+console.log('Listening on localhost:3002');
