@@ -5,6 +5,7 @@ const app = express();
 const jwt = require('express-jwt');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const morgan = require('morgan');
 
 let publicHeroes = require('./heroes').publicHeroes;
 let secretHeroes = require('./heroes').secretHeroes;
@@ -15,6 +16,7 @@ const secretEndpoint = '/api/secret';
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
+app.use(morgan('combined'))
 
 const authCheck = jwt({
   secret: new Buffer('AUTH0_SECRET', 'base64'),
