@@ -7,3 +7,5 @@ A small experimental project to investigate
 The server acts as a back-end to the angular-tour-of-heros tutorial.
 
 This project is based on the server part of <https://github.com/auth0-blog/angular2-tour-of-heroes>
+
+For a nice and easy way of generating valid jwts, check <https://jwt.io/>
