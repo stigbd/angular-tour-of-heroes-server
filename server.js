@@ -20,7 +20,7 @@ app.use(cors());
 app.use(morgan('combined'))
 
 const authCheck = jwt({
-  secret: new Buffer(process.en.AUTH0_SECRET, 'base64'),
+  secret: new Buffer(process.env.AUTH0_SECRET, 'base64'),
   audience: process.env.AUTH0_CLIENT_ID
 });
 
