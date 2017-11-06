@@ -40,7 +40,7 @@ app.get(`${publicEndpoint}/heroes/:id`, (req, res) => {
   res.json(hero);
 });
 
-// Save a new secret hero
+// Save a new public hero
 app.post(`${publicEndpoint}/heroes`, (req, res) => {
   let lastHero = 0;
   if (publicHeroes[publicHeroes.length - 1]) {
