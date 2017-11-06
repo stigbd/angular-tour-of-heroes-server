@@ -6,6 +6,7 @@ const jwt = require('express-jwt');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
+const dotenv = require('dotenv').config();
 
 let publicHeroes = require('./heroes').publicHeroes;
 let secretHeroes = require('./heroes').secretHeroes;
@@ -19,8 +20,8 @@ app.use(cors());
 app.use(morgan('combined'))
 
 const authCheck = jwt({
-  secret: new Buffer('AUTH0_SECRET', 'base64'),
-  audience: 'AUTH0_CLIENT_ID'
+  secret: new Buffer(process.en.AUTH0_SECRET, 'base64'),
+  audience: process.env.AUTH0_CLIENT_ID
 });
 
 
