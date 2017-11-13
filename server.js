@@ -19,10 +19,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 app.use(morgan('combined'))
 
-const authCheck = jwt({
-  secret: new Buffer(process.env.SECRET, 'base64')
-});
-
+var authCheck = jwt({ secret: process.env.SECRET});
 
 // ===== Public Routes =====
 
