@@ -32,7 +32,7 @@ app.get(`${publicEndpoint}/heroes`, (req, res) => {
 app.get(`${publicEndpoint}/heroes/:id`, (req, res) => {
   const hero = publicHeroes.find(hero => hero.id == req.params.id);
   if (!hero) {
-    res.json({ message: 'No hero found!' });
+    return res.sendStatus(404);
   }
   res.json(hero);
 });
@@ -58,15 +58,18 @@ app.post(`${publicEndpoint}/heroes`, (req, res) => {
 app.put(`${publicEndpoint}/heroes/:id`, (req, res) => {
   let hero = publicHeroes.find(hero => hero.id == req.params.id);
   hero.name = req.body.name;
-  res.json({ message: 'Hero saved!' });
+  res.sendStatus(204);
 });
 
 // Delete a public hero
 app.delete(`${publicEndpoint}/heroes/:id`, (req, res) => {
   const hero = publicHeroes.find(hero => hero.id == req.params.id);
+  if(!hero) {
+    return res.sendStatus(404);
+  }
   const index = publicHeroes.indexOf(hero);
   publicHeroes.splice(index, 1);
-  res.json({ message: 'Hero deleted' });
+  res.sendStatus(204);
 });
 
 // ===== Private Routes =====
@@ -81,7 +84,7 @@ app.get(`${secretEndpoint}/heroes/:id`, authCheck, (req, res) => {
   const hero = secretHeroes.find(hero => hero.id == req.params.id);
 
   if (!hero) {
-    res.json({ message: 'No hero found!' });
+    return res.sendStatus(404);
   }
 
   res.json(hero);
@@ -107,15 +110,18 @@ app.post(`${secretEndpoint}/heroes`, authCheck, (req, res) => {
 app.put(`${secretEndpoint}/heroes/:id`, authCheck, (req, res) => {
   let hero = secretHeroes.find(hero => hero.id == req.params.id);
   hero.name = req.body.name;
-  res.json({ message: 'Hero saved!' });
+  res.sendStatus(204);
 });
 
 // Delete a secret hero
 app.delete(`${secretEndpoint}/heroes/:id`, authCheck, (req, res) => {
   const hero = secretHeroes.find(hero => hero.id == req.params.id);
+  if(!hero) {
+    return res.sendStatus(404);
+  }
   const index = secretHeroes.indexOf(hero);
   secretHeroes.splice(index, 1);
-  res.json({ message: 'Hero deleted' });
+  res.sendStatus(204);
 });
 
 app.listen(3002);
