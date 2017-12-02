@@ -1,1 +1,5 @@
--   [X] Add more specific status codes
+-   [x] Add more specific status codes
+-   [x] Provide search capbility in GET
+-   [ ] Change persistence to mongoDB
+-   [ ] Add search to mongoDB
+-   [ ] Add tests

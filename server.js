@@ -25,7 +25,18 @@ var authCheck = jwt({ secret: process.env.SECRET});
 
 // Get all public heroes
 app.get(`${publicEndpoint}/heroes`, (req, res) => {
-  res.json(publicHeroes);
+  if (!req.query.name) {
+    return res.json(publicHeroes)
+  }
+  var results = [];
+  var searchField = "name";
+  var searchVal = req.query.name;
+  for (var i=0 ; i < publicHeroes.length ; i++) {
+      if (publicHeroes[i].name.startsWith(searchVal)) {
+        results.push(publicHeroes[i]);
+      }
+  }
+  res.json(results)
 });
 
 // Get an individual public hero
