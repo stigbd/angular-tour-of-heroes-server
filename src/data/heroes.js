@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 const publicHeroes = [
   { 'id': 11, 'name': 'Mr. Nice' },
@@ -11,7 +11,7 @@ const publicHeroes = [
   { 'id': 18, 'name': 'Dr IQ' },
   { 'id': 19, 'name': 'Magma' },
   { 'id': 20, 'name': 'Tornado' }
-];
+]
 
 const secretHeroes = [
   { 'id': 21, 'name': 'Wonder Woman' },
@@ -24,7 +24,7 @@ const secretHeroes = [
   { 'id': 28, 'name': 'Silver Surfer' },
   { 'id': 29, 'name': 'The Flash' },
   { 'id': 30, 'name': 'Iron Man' }
-];
+]
 
 module.exports = {
   publicHeroes,
