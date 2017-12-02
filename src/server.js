@@ -39,7 +39,8 @@ var options = {
 mongoose.connect(uri, options)
   .then(() => {
     console.log('Connected to the following db: ' + uri)
-    if (!process.env.NODE_ENV === 'test') {
+    if (process.env.NODE_ENV !== 'test') {
+      console.log('Loading default heroes')
       for (var hero of publicHeroes) {
         console.log(hero)
         var data = new Hero(hero)
