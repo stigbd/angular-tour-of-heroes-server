@@ -54,11 +54,11 @@ describe('/hero', () => {
     before(function (done) {
       let hero1 = new Hero({
         id: 1,
-        name: 'Hero One'
+        name: 'First Hero'
       })
       let hero2 = new Hero({
         id: 2,
-        name: 'Hero Two'
+        name: 'Second Hero'
       })
 
       hero1.save(function (err) {
@@ -101,7 +101,21 @@ describe('/hero', () => {
           res.should.have.status(200)
           res.should.be.json()
           res.body.should.be.an('object')
-          Object.keys(res.body).length.should.equal(12)
+          Object.keys(res.body).length.should.equal(2)
+        })
+        .catch(err => {
+          console.error(err)
+          throw err // Re-throw the error if the test should fail when an error happens
+        })
+    })
+    it('should return status code 200 and a list of heroes when GET /hero with query parameter', () => {
+      return chai.request(url)
+        .get('/api/public/heroes?name=First')
+        .then(res => {
+          res.should.have.status(200)
+          res.should.be.json()
+          res.body.should.be.an('object')
+          Object.keys(res.body).length.should.equal(1)
         })
         .catch(err => {
           console.error(err)

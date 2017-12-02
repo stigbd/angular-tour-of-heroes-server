@@ -11,6 +11,7 @@ module.exports = mongoose.model('Hero', new Schema({
     unique: true
   },
   name: {
-    type: String
+    type: String,
+    index: true
   }
 }))

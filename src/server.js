@@ -39,21 +39,23 @@ var options = {
 mongoose.connect(uri, options)
   .then(() => {
     console.log('Connected to the following db: ' + uri)
-    for (var hero of publicHeroes) {
-      console.log(hero)
-      var data = new Hero(hero)
+    if (!process.env.NODE_ENV === 'test') {
+      for (var hero of publicHeroes) {
+        console.log(hero)
+        var data = new Hero(hero)
 
-      // ---- save logic start
-      data
-        .save()
-        .then(saved => console.log('saved', saved))
-        .catch(err => {
-          if (err.code === 11000) {
-            return console.log('Object already saved')
-          }
-          console.error('err while saving', err)
-        })
-      // ---- save logic end
+        // ---- save logic start
+        data
+          .save()
+          .then(saved => console.log('saved', saved))
+          .catch(err => {
+            if (err.code === 11000) {
+              return console.log('Object already saved')
+            }
+            console.error('err while saving', err)
+          })
+        // ---- save logic end
+      }
     }
   })
   .catch(err => {
@@ -67,22 +69,22 @@ var authCheck = jwt({ secret: process.env.SECRET })
 
 // Get all public heroes
 app.get(`${publicEndpoint}/heroes`, (req, res) => {
+  console.log('req.query.name', req.query.name)
   var heroMap = {}
-  if (!req.query.name) {
-    Hero.find({}, function (err, heroes) {
-      if (err) {
-        return res.sendStatus(500)
+  Hero.find({name: new RegExp(req.query.name, 'm')}, function (err, heroes) {
+    if (err) {
+      return res.sendStatus(500)
+    }
+    console.log('heroes', heroes)
+    heroes.forEach(function (hero) {
+      var payload = {
+        id: hero.id,
+        name: hero.name
       }
-      heroes.forEach(function (hero) {
-        var payload = {
-          id: hero.id,
-          name: hero.name
-        }
-        heroMap[hero._id] = payload
-      })
-      res.send(heroMap)
+      heroMap[hero._id] = payload
     })
-  }
+    res.send(heroMap)
+  })
 })
 
 // Get an individual public hero
