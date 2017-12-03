@@ -70,13 +70,11 @@ var authCheck = jwt({ secret: process.env.SECRET })
 
 // Get all public heroes
 app.get(`${publicEndpoint}/heroes`, (req, res) => {
-  console.log('req.query.name', req.query.name)
   var heroMap = {}
   Hero.find({name: new RegExp(req.query.name, 'm')}, function (err, heroes) {
     if (err) {
       return res.sendStatus(500)
     }
-    console.log('heroes', heroes)
     heroes.forEach(function (hero) {
       var payload = {
         id: hero.id,
@@ -111,37 +109,62 @@ app.get(`${publicEndpoint}/heroes/:id`, (req, res) => {
 
 // Save a new public hero
 app.post(`${publicEndpoint}/heroes`, (req, res) => {
-  let lastHero = 0
-  if (publicHeroes[publicHeroes.length - 1]) {
-    lastHero = publicHeroes[publicHeroes.length - 1].id
-  }
-
-  const hero = {
-    id: lastHero + 1,
+  let hero = new Hero({
+    id: req.body.id,
     name: req.body.name
-  }
-
-  publicHeroes.push(hero)
-
-  res.json(hero)
+  })
+  hero.save(function (err) {
+    if (err && err.name === 'MongoError' && err.message.includes('E11000')) {
+      err.name = 'DuplicationError'
+      err.message = 'Hero already exists'
+      return res.status(400).json({errorName: err.name, errorMessage: err.message})
+    }
+    if (err && err.name === 'ValidationError') {
+      return res.status(400).json({errorName: err.name, errorMessage: err.message})
+    }
+    if (err) {
+      console.log(err)
+      return res.status(500).json({error: true})
+    }
+    res.status(201).location('/heroes/' + hero.id).send()
+  })
 })
 
 // Update a public hero
 app.put(`${publicEndpoint}/heroes/:id`, (req, res) => {
-  let hero = publicHeroes.find(hero => hero.id === req.params.id)
-  hero.name = req.body.name
-  res.sendStatus(204)
+  var id = req.params.id
+  Hero.findOne({id: id}, function (err, hero) {
+    if (err) {
+      console.error(err)
+      return res.sendStatus(500)
+    }
+    if (!hero) {
+      return res.sendStatus(404)
+    }
+    hero.id = req.body.id || hero.id
+    hero.name = req.body.name || hero.name
+    hero.save(function (err) {
+      if (err) {
+        console.error(err)
+        return res.sendStatus(500)
+      }
+    })
+    res.sendStatus(204)
+  })
 })
 
 // Delete a public hero
 app.delete(`${publicEndpoint}/heroes/:id`, (req, res) => {
-  const hero = publicHeroes.find(hero => hero.id === req.params.id)
-  if (!hero) {
-    return res.sendStatus(404)
-  }
-  const index = publicHeroes.indexOf(hero)
-  publicHeroes.splice(index, 1)
-  res.sendStatus(204)
+  var id = req.params.id
+  Hero.findOneAndRemove({id: id}, function (err, hero) {
+    if (err) {
+      return res.sendStatus(500)
+    }
+    if (!hero) {
+      return res.sendStatus(404)
+    }
+    res.sendStatus(204)
+  })
 })
 
 // ===== Private Routes =====
