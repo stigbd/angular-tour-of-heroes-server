@@ -53,11 +53,9 @@ describe('/hero', () => {
     let heroId1, heroId2
     before(function (done) {
       let hero1 = new Hero({
-        id: 1,
         name: 'First Hero'
       })
       let hero2 = new Hero({
-        id: 2,
         name: 'Second Hero'
       })
 
@@ -79,13 +77,13 @@ describe('/hero', () => {
     })
 
     after(function (done) {
-      Hero.remove({id: heroId1}, function (err) {
+      Hero.findByIdAndRemove(heroId1, function (err) {
         if (err) {
           console.error(err)
           throw err
         }
       })
-      Hero.remove({id: heroId2}, function (err) {
+      Hero.findByIdAndRemove(heroId2, function (err) {
         if (err) {
           console.error(err)
           throw err
@@ -123,9 +121,11 @@ describe('/hero', () => {
         })
     })
   })
+
   describe('POST /api/public/heroes', () => {
+    let heroId
     after(function (done) {
-      Hero.findOneAndRemove({id: 100}, function (err) {
+      Hero.findByIdAndRemove(heroId, function (err) {
         if (err) {
           console.error(err)
         }
@@ -134,7 +134,6 @@ describe('/hero', () => {
     })
 
     let hero = new Hero({
-      id: '100',
       name: 'New Hero'
     })
     it('should return status code 201 and a location header', () => {
@@ -144,6 +143,8 @@ describe('/hero', () => {
         .then(res => {
           res.should.have.status(201)
           res.should.have.header('Location')
+          let locationArray = res.header.location.split('/')
+          heroId = locationArray[locationArray.length - 1]
         })
         .catch(err => {
           // console.error(err)
@@ -172,7 +173,6 @@ describe('/hero', () => {
     let heroId
     before(function (done) {
       let hero = new Hero({
-        id: 1,
         name: 'First Hero'
       })
 
@@ -187,7 +187,7 @@ describe('/hero', () => {
     })
 
     after(function (done) {
-      Hero.remove({id: heroId}, function (err) {
+      Hero.findByIdAndRemove(heroId, function (err) {
         if (err) {
           console.error(err)
           throw err
@@ -208,9 +208,9 @@ describe('/hero', () => {
         })
     })
     it('should return status code 404 when hero is not found', () => {
-      let nonExistingId = 0
+      var id = require('mongoose').Types.ObjectId()
       return chai.request(url)
-        .get('/api/public/heroes/' + nonExistingId)
+        .get('/api/public/heroes/' + id)
         .then(res => {
           res.should.have.status(404)
           res.should.not.be.json()
@@ -222,10 +222,8 @@ describe('/hero', () => {
     })
   })
   describe('PUT /hero/:id', () => {
-    let heroId = 2000
-
+    let heroId
     let hero = new Hero({
-      id: heroId,
       name: 'Update This Hero'
     })
 
@@ -235,11 +233,12 @@ describe('/hero', () => {
           console.error(err)
           throw err
         }
+        heroId = hero.id
         done()
       })
     })
     after(function (done) {
-      Hero.remove({id: heroId}, function (err) {
+      Hero.findByIdAndRemove(heroId, function (err) {
         if (err) {
           console.error(err)
           throw err
@@ -260,9 +259,9 @@ describe('/hero', () => {
         })
     })
     it('should return status code 404 when hero is not found', () => {
-      let nonExistingId = 0
+      var id = require('mongoose').Types.ObjectId()
       return chai.request(url)
-        .put('/api/public/heroes/' + nonExistingId)
+        .put('/api/public/heroes/' + id)
         .send(hero)
         .then(res => {
           res.should.have.status(404)
@@ -274,10 +273,9 @@ describe('/hero', () => {
     })
   })
   describe('DELETE /hero/:id', () => {
-    let heroId = 1000
+    let heroId
     before(function (done) {
       let hero = new Hero({
-        id: heroId,
         name: 'Delete This Hero'
       })
 
@@ -286,6 +284,7 @@ describe('/hero', () => {
           console.error(err)
           throw err
         }
+        heroId = hero.id
         done()
       })
     })
@@ -302,9 +301,9 @@ describe('/hero', () => {
         })
     })
     it('should return status code 404 when hero is not found', () => {
-      let nonExistingId = 0
+      var id = require('mongoose').Types.ObjectId()
       return chai.request(url)
-        .delete('/api/public/heroes/' + nonExistingId)
+        .delete('/api/public/heroes/' + id)
         .then(res => {
           res.should.have.status(404)
           res.should.not.be.json()
@@ -314,31 +313,5 @@ describe('/hero', () => {
           throw err // Re-throw the error if the test should fail when an error happens
         })
     })
-  })
-})
-
-describe('/secret-hero', () => {
-  describe('GET /secret-hero', () => {
-    it('should return status code 200 and a list of secret-heroes with a good jwt')
-    it('should return status code 401 when bad jwt')
-  })
-  describe('POST /secret-hero', () => {
-    it('should return status code 201 and a location header with a good jwt')
-    it('should return status code 401 when bad jwt')
-  })
-  describe('GET /secret-hero/:id', () => {
-    it('should return status code 200 and a secret hero as json with good jwt')
-    it('should return status code 401 when bad jwt')
-    it('should return status code 404 when secret-hero is not found')
-  })
-  describe('PUT /secret-hero/:id', () => {
-    it('should return status code 200 and the updated secret-hero as json with good jwt')
-    it('should return status code 401 when bad jwt')
-    it('should return status code 404 when secret-hero is not found')
-  })
-  describe('DELETE /secret-hero/:id', () => {
-    it('should return status code 204 when good jwt')
-    it('should return status code 401 when bad jwt')
-    it('should return status code 404 when secret-hero is not found')
   })
 })

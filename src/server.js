@@ -63,8 +63,6 @@ mongoose.connect(uri, options)
     console.error('Error while trying to connect with mongodb')
     throw err
   })
-// ================================
-var authCheck = jwt({ secret: process.env.SECRET })
 
 // ===== Public Routes =====
 
@@ -77,7 +75,6 @@ app.get(`${publicEndpoint}/heroes`, (req, res) => {
     }
     heroes.forEach(function (hero) {
       var payload = {
-        id: hero.id,
         name: hero.name
       }
       heroMap[hero._id] = payload
@@ -89,7 +86,7 @@ app.get(`${publicEndpoint}/heroes`, (req, res) => {
 // Get an individual public hero
 app.get(`${publicEndpoint}/heroes/:id`, (req, res) => {
   var id = req.params.id
-  Hero.findOne({id: id}, function (err, hero) {
+  Hero.findById(id, function (err, hero) {
     if (err) {
       console.error(err)
       return res.sendStatus(500)
@@ -99,9 +96,7 @@ app.get(`${publicEndpoint}/heroes/:id`, (req, res) => {
     }
     var payload = {
       id: hero.id,
-      name: hero.name,
-      email: hero.email,
-      admin: hero.admin
+      name: hero.name
     }
     res.send(payload)
   })
@@ -110,7 +105,6 @@ app.get(`${publicEndpoint}/heroes/:id`, (req, res) => {
 // Save a new public hero
 app.post(`${publicEndpoint}/heroes`, (req, res) => {
   let hero = new Hero({
-    id: req.body.id,
     name: req.body.name
   })
   hero.save(function (err) {
@@ -133,7 +127,7 @@ app.post(`${publicEndpoint}/heroes`, (req, res) => {
 // Update a public hero
 app.put(`${publicEndpoint}/heroes/:id`, (req, res) => {
   var id = req.params.id
-  Hero.findOne({id: id}, function (err, hero) {
+  Hero.findById(id, function (err, hero) {
     if (err) {
       console.error(err)
       return res.sendStatus(500)
@@ -141,7 +135,6 @@ app.put(`${publicEndpoint}/heroes/:id`, (req, res) => {
     if (!hero) {
       return res.sendStatus(404)
     }
-    hero.id = req.body.id || hero.id
     hero.name = req.body.name || hero.name
     hero.save(function (err) {
       if (err) {
@@ -156,7 +149,7 @@ app.put(`${publicEndpoint}/heroes/:id`, (req, res) => {
 // Delete a public hero
 app.delete(`${publicEndpoint}/heroes/:id`, (req, res) => {
   var id = req.params.id
-  Hero.findOneAndRemove({id: id}, function (err, hero) {
+  Hero.findByIdAndRemove(id, function (err, hero) {
     if (err) {
       return res.sendStatus(500)
     }
@@ -168,6 +161,8 @@ app.delete(`${publicEndpoint}/heroes/:id`, (req, res) => {
 })
 
 // ===== Private Routes =====
+
+var authCheck = jwt({ secret: process.env.SECRET })
 
 // Get all secret heroes
 app.get(`${secretEndpoint}/heroes`, authCheck, (req, res) => {
