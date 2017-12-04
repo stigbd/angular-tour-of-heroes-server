@@ -1,29 +1,29 @@
 'use strict'
 
 const publicHeroes = [
-  { 'id': 11, 'name': 'Mr. Nice' },
-  { 'id': 12, 'name': 'Narco' },
-  { 'id': 13, 'name': 'Bombasto' },
-  { 'id': 14, 'name': 'Celeritas' },
-  { 'id': 15, 'name': 'Magneta' },
-  { 'id': 16, 'name': 'RubberMan' },
-  { 'id': 17, 'name': 'Dynama' },
-  { 'id': 18, 'name': 'Dr IQ' },
-  { 'id': 19, 'name': 'Magma' },
-  { 'id': 20, 'name': 'Tornado' }
+  { 'name': 'Mr. Nice' },
+  { 'name': 'Narco' },
+  { 'name': 'Bombasto' },
+  { 'name': 'Celeritas' },
+  { 'name': 'Magneta' },
+  { 'name': 'RubberMan' },
+  { 'name': 'Dynama' },
+  { 'name': 'Dr IQ' },
+  { 'name': 'Magma' },
+  { 'name': 'Tornado' }
 ]
 
 const secretHeroes = [
-  { 'id': 21, 'name': 'Wonder Woman' },
-  { 'id': 22, 'name': 'The Incredible Hulk' },
-  { 'id': 23, 'name': 'Superman' },
-  { 'id': 24, 'name': 'Thor' },
-  { 'id': 25, 'name': 'Batman' },
-  { 'id': 26, 'name': 'Spiderman' },
-  { 'id': 27, 'name': 'Captain America' },
-  { 'id': 28, 'name': 'Silver Surfer' },
-  { 'id': 29, 'name': 'The Flash' },
-  { 'id': 30, 'name': 'Iron Man' }
+  { 'name': 'Wonder Woman', 'codeName': '001' },
+  { 'name': 'The Incredible Hulk', 'codeName': '002' },
+  { 'name': 'Superman', 'codeName': '003' },
+  { 'name': 'Thor', 'codeName': '004' },
+  { 'name': 'Batman', 'codeName': '005' },
+  { 'name': 'Spiderman', 'codeName': '006' },
+  { 'name': 'Captain America', 'codeName': '007' },
+  { 'name': 'Silver Surfer', 'codeName': '008' },
+  { 'name': 'The Flash', 'codeName': '009' },
+  { 'name': 'Iron Man', 'codeName': '010' }
 ]
 
 module.exports = {

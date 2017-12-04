@@ -13,7 +13,7 @@ let publicHeroes = require('./data/heroes').publicHeroes
 let secretHeroes = require('./data/heroes').secretHeroes
 let Hero = require('./models/hero')
 let SecretHero = require('./models/secrethero')
-const publicEndpoint = '/api/public'
+
 const secretEndpoint = '/api/secret'
 
 app.use(bodyParser.json())
@@ -81,99 +81,8 @@ mongoose.connect(uri, options)
 
 // ===== Public Routes =====
 
-// Get all public heroes
-app.get(`${publicEndpoint}/heroes`, (req, res) => {
-  var heroMap = {}
-  Hero.find({name: new RegExp(req.query.name, 'm')}, function (err, heroes) {
-    if (err) {
-      return res.sendStatus(500)
-    }
-    heroes.forEach(function (hero) {
-      var payload = {
-        name: hero.name
-      }
-      heroMap[hero._id] = payload
-    })
-    res.send(heroMap)
-  })
-})
-
-// Get an individual public hero
-app.get(`${publicEndpoint}/heroes/:id`, (req, res) => {
-  var id = req.params.id
-  Hero.findById(id, function (err, hero) {
-    if (err) {
-      console.error(err)
-      return res.sendStatus(500)
-    }
-    if (!hero) {
-      return res.sendStatus(404)
-    }
-    var payload = {
-      id: hero.id,
-      name: hero.name
-    }
-    res.send(payload)
-  })
-})
-
-// Save a new public hero
-app.post(`${publicEndpoint}/heroes`, (req, res) => {
-  let hero = new Hero({
-    name: req.body.name
-  })
-  hero.save(function (err) {
-    if (err && err.name === 'MongoError' && err.message.includes('E11000')) {
-      err.name = 'DuplicationError'
-      err.message = 'Hero already exists'
-      return res.status(400).json({errorName: err.name, errorMessage: err.message})
-    }
-    if (err && err.name === 'ValidationError') {
-      return res.status(400).json({errorName: err.name, errorMessage: err.message})
-    }
-    if (err) {
-      console.log(err)
-      return res.status(500).json({error: true})
-    }
-    res.status(201).location('/heroes/' + hero.id).send()
-  })
-})
-
-// Update a public hero
-app.put(`${publicEndpoint}/heroes/:id`, (req, res) => {
-  var id = req.params.id
-  Hero.findById(id, function (err, hero) {
-    if (err) {
-      console.error(err)
-      return res.sendStatus(500)
-    }
-    if (!hero) {
-      return res.sendStatus(404)
-    }
-    hero.name = req.body.name || hero.name
-    hero.save(function (err) {
-      if (err) {
-        console.error(err)
-        return res.sendStatus(500)
-      }
-    })
-    res.sendStatus(204)
-  })
-})
-
-// Delete a public hero
-app.delete(`${publicEndpoint}/heroes/:id`, (req, res) => {
-  var id = req.params.id
-  Hero.findByIdAndRemove(id, function (err, hero) {
-    if (err) {
-      return res.sendStatus(500)
-    }
-    if (!hero) {
-      return res.sendStatus(404)
-    }
-    res.sendStatus(204)
-  })
-})
+var hero = require('./routes/hero')
+app.use('/', hero)
 
 // ===== Private Routes =====
 
