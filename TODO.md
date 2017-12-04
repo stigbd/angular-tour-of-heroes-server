@@ -1,5 +1,7 @@
 -   [x] Add more specific status codes
 -   [x] Provide search capbility in GET
--   [ ] Change persistence to mongoDB
+-   [x] Change persistence to mongoDB
 -   [x] Add search to mongoDB
--   [ ] Add tests
+-   [x] Add tests
+-   [x] Move secret-heroes to specific models
+-   [ ] Refactor to controller/routers
