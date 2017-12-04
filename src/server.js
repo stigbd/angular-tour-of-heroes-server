@@ -1,5 +1,6 @@
 'use strict'
 
+var upperCase = require('upper-case')
 const express = require('express')
 const app = express()
 const jwt = require('express-jwt')
@@ -19,7 +20,7 @@ var promiseLib = global.Promise
 // Set up mongodb connection
 let uri
 var db = process.env.DATABASE
-if (process.env.NODE_ENV === 'test') {
+if (upperCase(process.env.NODE_ENV) === 'TEST') {
   db = process.env.TEST_DATABASE
 }
 uri = 'mongodb://' + process.env.DBHOST + ':' + process.env.DBPORT + '/' + db
@@ -32,7 +33,7 @@ var options = {
 mongoose.connect(uri, options)
   .then(() => {
     console.log('Connected to the following db: ' + uri)
-    if (process.env.NODE_ENV !== 'test') {
+    if (upperCase(process.env.NODE_ENV) !== 'TEST') {
       // ===== Load default data ====
       var heroLoader = require('./etl/heroLoader')
       heroLoader.loadHeroes()

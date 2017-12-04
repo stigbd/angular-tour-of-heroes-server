@@ -9,10 +9,10 @@ module.exports = {
       // ---- save logic start
       newSecretHero
         .save()
-        .then(saved => console.log('saved', saved))
+        .then(saved => console.log('Secret heroes saved', saved))
         .catch(err => {
           if (err.code === 11000) {
-            return console.log('Object already saved')
+            return true // ignore this
           }
           console.error('err while saving', err)
         })
