@@ -3,18 +3,19 @@ var Hero = require('../models/hero')
 module.exports = {
 
   getHeroes: function (req, res) {
-    var heroMap = {}
+    var heroArray = []
     Hero.find({name: new RegExp(req.query.name, 'm')}, function (err, heroes) {
       if (err) {
         return res.sendStatus(500)
       }
       heroes.forEach(function (hero) {
         var payload = {
+          id: hero.id,
           name: hero.name
         }
-        heroMap[hero._id] = payload
+        heroArray.push(payload)
       })
-      res.send(heroMap)
+      res.send(heroArray)
     })
   },
 

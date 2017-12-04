@@ -3,19 +3,20 @@ var SecretHero = require('../models/secrethero')
 module.exports = {
 
   getSecretHeroes: function (req, res) {
-    var secretHeroMap = {}
+    var secretHeroArray = []
     SecretHero.find({name: new RegExp(req.query.name, 'm')}, function (err, secretHeroes) {
       if (err) {
         return res.sendStatus(500)
       }
       secretHeroes.forEach(function (secretHero) {
         var payload = {
+          id: secretHero.id,
           name: secretHero.name,
           codeName: secretHero.codeName
         }
-        secretHeroMap[secretHero._id] = payload
+        secretHeroArray.push(payload)
       })
-      res.send(secretHeroMap)
+      res.send(secretHeroArray)
     })
   },
   getSecretHeroById: function (req, res) {
@@ -39,7 +40,8 @@ module.exports = {
 
   saveSecretHero: function (req, res) {
     let secretHero = new SecretHero({
-      name: req.body.name
+      name: req.body.name,
+      codeName: req.body.codeName
     })
     secretHero.save(function (err) {
       if (err && err.name === 'MongoError' && err.message.includes('E11000')) {
@@ -69,6 +71,7 @@ module.exports = {
         return res.sendStatus(404)
       }
       secretHero.name = req.body.name || secretHero.name
+      secretHero.codeName = req.body.codeName || secretHero.codeName
       secretHero.save(function (err) {
         if (err) {
           console.error(err)

@@ -6,3 +6,4 @@
 -   [x] Move secret-heroes to specific models
 -   [x] Refactor to controller/routers
 -   [x] Refactor load into etl
+-   [ ] Improve test on updates
