@@ -9,11 +9,6 @@ const morgan = require('morgan')
 require('dotenv').config()
 let mongoose = require('mongoose')
 
-let publicHeroes = require('./data/heroes').publicHeroes
-let secretHeroes = require('./data/heroes').secretHeroes
-let Hero = require('./models/hero')
-let SecretHero = require('./models/secrethero')
-
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cors())
@@ -38,38 +33,11 @@ mongoose.connect(uri, options)
   .then(() => {
     console.log('Connected to the following db: ' + uri)
     if (process.env.NODE_ENV !== 'test') {
-      console.log('Loading default heroes')
-      for (var hero of publicHeroes) {
-        console.log(hero)
-        var newHero = new Hero(hero)
-
-        // ---- save logic start
-        newHero
-          .save()
-          .then(saved => console.log('saved', saved))
-          .catch(err => {
-            if (err.code === 11000) {
-              return console.log('Object already saved')
-            }
-            console.error('err while saving', err)
-          })
-        // ---- save logic end
-      }
-      for (var secretHero of secretHeroes) {
-        var newSecretHero = new SecretHero(secretHero)
-
-        // ---- save logic start
-        newSecretHero
-          .save()
-          .then(saved => console.log('saved', saved))
-          .catch(err => {
-            if (err.code === 11000) {
-              return console.log('Object already saved')
-            }
-            console.error('err while saving', err)
-          })
-        // ---- save logic end
-      }
+      // ===== Load default data ====
+      var heroLoader = require('./etl/heroLoader')
+      heroLoader.loadHeroes()
+      var secretHeroLoader = require('./etl/secretHeroLoader')
+      secretHeroLoader.loadSecretHeroes()
     }
   })
   .catch(err => {

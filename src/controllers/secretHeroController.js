@@ -10,7 +10,8 @@ module.exports = {
       }
       secretHeroes.forEach(function (secretHero) {
         var payload = {
-          name: secretHero.name
+          name: secretHero.name,
+          codeName: secretHero.codeName
         }
         secretHeroMap[secretHero._id] = payload
       })
@@ -29,7 +30,8 @@ module.exports = {
       }
       var payload = {
         id: secretHero.id,
-        name: secretHero.name
+        name: secretHero.name,
+        codeName: secretHero.codeName
       }
       res.send(payload)
     })

@@ -5,4 +5,4 @@
 -   [x] Add tests
 -   [x] Move secret-heroes to specific models
 -   [x] Refactor to controller/routers
--   [ ] Refactor load into etl
+-   [x] Refactor load into etl
