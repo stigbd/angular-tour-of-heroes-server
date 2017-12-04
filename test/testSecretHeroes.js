@@ -38,13 +38,8 @@ before(function (done) {
     })
   console.log('Testing against server at ' + url)
   console.log('process.env.SECRET', process.env.SECRET)
-  var userPayload = {
-    name: 'user.name',
-    email: 'user.email',
-    admin: 'user.admin'
-  }
 
-  token = jwt.sign({userPayload}, process.env.SECRET)
+  token = jwt.sign({}, process.env.SECRET)
   done()
 })
 
@@ -116,6 +111,20 @@ describe('/secrethero', () => {
           throw err // Re-throw the error if the test should fail when an error happens
         })
     })
+    it('should return status code 401 with no jwt', () => {
+      return chai.request(url)
+        .get('/api/secret/secretheroes')
+        .then(res => {
+          res.should.have.status(401)
+          res.should.be.json()
+          res.body.should.have.property('message')
+          res.body.message.should.include('Invalid token')
+        })
+        .catch(err => {
+          console.error(err)
+          throw err // Re-throw the error if the test should fail when an error happens
+        })
+    })
     it('should return status code 200 and a list of secretHeroes when GET /secrethero with query parameter', () => {
       return chai.request(url)
         .get('/api/secret/secretheroes?name=First')
@@ -157,6 +166,21 @@ describe('/secrethero', () => {
           res.should.have.header('Location')
           let locationArray = res.header.location.split('/')
           secretHeroId = locationArray[locationArray.length - 1]
+        })
+        .catch(err => {
+          // console.error(err)
+          throw err // Re-throw the error if the test should fail when an error happens
+        })
+    })
+    it('should return status code 401 with no jwt', () => {
+      return chai.request(url)
+        .post('/api/secret/secretheroes')
+        .send(secretHero)
+        .then(res => {
+          res.should.have.status(401)
+          res.should.be.json()
+          res.body.should.have.property('message')
+          res.body.message.should.include('Invalid token')
         })
         .catch(err => {
           // console.error(err)
@@ -221,6 +245,20 @@ describe('/secrethero', () => {
           throw err // Re-throw the error if the test should fail when an error happens
         })
     })
+    it('should return status code 401 when no jwt', () => {
+      return chai.request(url)
+        .get('/api/secret/secretheroes/' + secretHeroId)
+        .then(res => {
+          res.should.have.status(401)
+          res.should.be.json()
+          res.body.should.have.property('message')
+          res.body.message.should.include('Invalid token')
+        })
+        .catch(err => {
+          // console.error(err);
+          throw err // Re-throw the error if the test should fail when an error happens
+        })
+    })
     it('should return status code 404 when secretHero is not found', () => {
       var id = require('mongoose').Types.ObjectId()
       return chai.request(url)
@@ -274,6 +312,20 @@ describe('/secrethero', () => {
           throw err // Re-throw the error if the test should fail when an error happens
         })
     })
+    it('should return status code 401 when no jwt', () => {
+      return chai.request(url)
+        .put('/api/secret/secretheroes/' + secretHeroId)
+        .send(secretHero)
+        .then(res => {
+          res.should.have.status(401)
+          res.should.be.json()
+          res.body.should.have.property('message')
+          res.body.message.should.include('Invalid token')
+        })
+        .catch(err => {
+          throw err // Re-throw the error if the test should fail when an error happens
+        })
+    })
     it('should return status code 404 when secretHero is not found', () => {
       var id = require('mongoose').Types.ObjectId()
       return chai.request(url)
@@ -321,6 +373,20 @@ describe('/secrethero', () => {
         .then(res => {
           res.should.have.status(204)
           res.should.not.be.json()
+        })
+        .catch(err => {
+          // console.error(err);
+          throw err // Re-throw the error if the test should fail when an error happens
+        })
+    })
+    it('should return status code 401 when no jwt', () => {
+      return chai.request(url)
+        .delete('/api/secret/secretheroes/' + secretHeroId)
+        .then(res => {
+          res.should.have.status(401)
+          res.should.be.json()
+          res.body.should.have.property('message')
+          res.body.message.should.include('Invalid token')
         })
         .catch(err => {
           // console.error(err);

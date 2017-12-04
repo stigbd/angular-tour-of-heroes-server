@@ -275,7 +275,7 @@ app.delete(`${secretEndpoint}/secretheroes/:id`, authCheck, (req, res) => {
 
 app.use(function (err, req, res, next) {
   if (err.name === 'UnauthorizedError') {
-    res.status(401).send('invalid token...')
+    res.status(401).send({'message': 'Invalid token'})
     console.err(err)
   }
   next(err)
