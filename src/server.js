@@ -14,8 +14,6 @@ let secretHeroes = require('./data/heroes').secretHeroes
 let Hero = require('./models/hero')
 let SecretHero = require('./models/secrethero')
 
-const secretEndpoint = '/api/secret'
-
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cors())
@@ -88,99 +86,10 @@ app.use('/', hero)
 
 var authCheck = jwt({ secret: process.env.SECRET })
 
-// Get all secret heroes
-app.get(`${secretEndpoint}/secretheroes`, authCheck, (req, res) => {
-  var secretHeroMap = {}
-  SecretHero.find({name: new RegExp(req.query.name, 'm')}, function (err, secretHeroes) {
-    if (err) {
-      return res.sendStatus(500)
-    }
-    secretHeroes.forEach(function (secretHero) {
-      var payload = {
-        name: secretHero.name
-      }
-      secretHeroMap[secretHero._id] = payload
-    })
-    res.send(secretHeroMap)
-  })
-})
+var secretHero = require('./routes/secrethero')
+app.use('/', authCheck, secretHero)
 
-// Get an individual secret hero
-app.get(`${secretEndpoint}/secretheroes/:id`, authCheck, (req, res) => {
-  var id = req.params.id
-  SecretHero.findById(id, function (err, secretHero) {
-    if (err) {
-      console.error(err)
-      return res.sendStatus(500)
-    }
-    if (!secretHero) {
-      return res.sendStatus(404)
-    }
-    var payload = {
-      id: secretHero.id,
-      name: secretHero.name
-    }
-    res.send(payload)
-  })
-})
-
-// Save a new secret hero
-app.post(`${secretEndpoint}/secretheroes`, authCheck, (req, res) => {
-  let secretHero = new SecretHero({
-    name: req.body.name
-  })
-  secretHero.save(function (err) {
-    if (err && err.name === 'MongoError' && err.message.includes('E11000')) {
-      err.name = 'DuplicationError'
-      err.message = 'SecretHero already exists'
-      return res.status(400).json({errorName: err.name, errorMessage: err.message})
-    }
-    if (err && err.name === 'ValidationError') {
-      return res.status(400).json({errorName: err.name, errorMessage: err.message})
-    }
-    if (err) {
-      console.log(err)
-      return res.status(500).json({error: true})
-    }
-    res.status(201).location('/secretHeroes/' + secretHero.id).send()
-  })
-})
-
-// Update a secret hero
-app.put(`${secretEndpoint}/secretheroes/:id`, authCheck, (req, res) => {
-  var id = req.params.id
-  SecretHero.findById(id, function (err, secretHero) {
-    if (err) {
-      console.error(err)
-      return res.sendStatus(500)
-    }
-    if (!secretHero) {
-      return res.sendStatus(404)
-    }
-    secretHero.name = req.body.name || secretHero.name
-    secretHero.save(function (err) {
-      if (err) {
-        console.error(err)
-        return res.sendStatus(500)
-      }
-    })
-    res.sendStatus(204)
-  })
-})
-
-// Delete a secret hero
-app.delete(`${secretEndpoint}/secretheroes/:id`, authCheck, (req, res) => {
-  var id = req.params.id
-  SecretHero.findByIdAndRemove(id, function (err, secretHero) {
-    if (err) {
-      return res.sendStatus(500)
-    }
-    if (!secretHero) {
-      return res.sendStatus(404)
-    }
-    res.sendStatus(204)
-  })
-})
+// ===== Error handling  =====
 
 app.use(function (err, req, res, next) {
   if (err.name === 'UnauthorizedError') {

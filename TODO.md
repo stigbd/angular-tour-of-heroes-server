@@ -4,4 +4,5 @@
 -   [x] Add search to mongoDB
 -   [x] Add tests
 -   [x] Move secret-heroes to specific models
--   [ ] Refactor to controller/routers
+-   [x] Refactor to controller/routers
+-   [ ] Refactor load into etl
