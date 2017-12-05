@@ -56,7 +56,7 @@ module.exports = {
         console.log(err)
         return res.status(500).json({error: true})
       }
-      res.status(201).location('/secretHeroes/' + secretHero.id).send()
+      res.send(secretHero)
     })
   },
 

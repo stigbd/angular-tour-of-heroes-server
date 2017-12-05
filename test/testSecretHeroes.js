@@ -103,8 +103,8 @@ describe('/secrethero', () => {
         .then(res => {
           res.should.have.status(200)
           res.should.be.json()
-          res.body.should.be.an('object')
-          Object.keys(res.body).length.should.equal(2)
+          res.body.should.be.an('array')
+          res.body.length.should.equal(2)
         })
         .catch(err => {
           console.error(err)
@@ -132,8 +132,8 @@ describe('/secrethero', () => {
         .then(res => {
           res.should.have.status(200)
           res.should.be.json()
-          res.body.should.be.an('object')
-          Object.keys(res.body).length.should.equal(1)
+          res.body.should.be.an('array')
+          res.body.length.should.equal(1)
         })
         .catch(err => {
           console.error(err)
@@ -156,16 +156,16 @@ describe('/secrethero', () => {
     let secretHero = new SecretHero({
       name: 'New SecretHero'
     })
-    it('should return status code 201 and a location header', () => {
+    it('should return status code 200 and the new secret hero', () => {
       return chai.request(url)
         .post('/api/secret/secretheroes')
         .set('Authorization', 'Bearer ' + token)
         .send(secretHero)
         .then(res => {
-          res.should.have.status(201)
-          res.should.have.header('Location')
-          let locationArray = res.header.location.split('/')
-          secretHeroId = locationArray[locationArray.length - 1]
+          res.should.have.status(200)
+          res.should.be.json()
+          res.body.should.have.property('_id')
+          secretHeroId = res.body._id
         })
         .catch(err => {
           // console.error(err)

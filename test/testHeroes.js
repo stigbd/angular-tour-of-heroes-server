@@ -98,8 +98,8 @@ describe('/hero', () => {
         .then(res => {
           res.should.have.status(200)
           res.should.be.json()
-          res.body.should.be.an('object')
-          Object.keys(res.body).length.should.equal(2)
+          res.body.should.be.an('array')
+          res.body.length.should.equal(2)
         })
         .catch(err => {
           console.error(err)
@@ -112,8 +112,8 @@ describe('/hero', () => {
         .then(res => {
           res.should.have.status(200)
           res.should.be.json()
-          res.body.should.be.an('object')
-          Object.keys(res.body).length.should.equal(1)
+          res.body.should.be.an('array')
+          res.body.length.should.equal(1)
         })
         .catch(err => {
           console.error(err)
@@ -136,15 +136,15 @@ describe('/hero', () => {
     let hero = new Hero({
       name: 'New Hero'
     })
-    it('should return status code 201 and a location header', () => {
+    it('should return status code 200 and the new hero', () => {
       return chai.request(url)
         .post('/api/public/heroes')
         .send(hero)
         .then(res => {
-          res.should.have.status(201)
-          res.should.have.header('Location')
-          let locationArray = res.header.location.split('/')
-          heroId = locationArray[locationArray.length - 1]
+          res.should.have.status(200)
+          res.should.be.json()
+          res.body.should.have.property('_id')
+          heroId = res.body._id
         })
         .catch(err => {
           // console.error(err)
