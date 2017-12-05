@@ -54,7 +54,11 @@ module.exports = {
         console.log(err)
         return res.status(500).json({error: true})
       }
-      res.send(hero)
+      var payload = {
+        id: hero.id,
+        name: hero.name
+      }
+      res.send(payload)
     })
   },
 

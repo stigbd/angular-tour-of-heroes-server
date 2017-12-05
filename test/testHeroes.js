@@ -143,8 +143,8 @@ describe('/hero', () => {
         .then(res => {
           res.should.have.status(200)
           res.should.be.json()
-          res.body.should.have.property('_id')
-          heroId = res.body._id
+          res.body.should.have.property('id')
+          heroId = res.body.id
         })
         .catch(err => {
           // console.error(err)
