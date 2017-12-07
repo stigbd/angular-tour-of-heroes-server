@@ -57,10 +57,12 @@ describe('/secrethero', () => {
     let secretHeroId1, secretHeroId2
     before(function (done) {
       let secretHero1 = new SecretHero({
-        name: 'First SecretHero'
+        name: 'First SecretHero',
+        codeName: '001'
       })
       let secretHero2 = new SecretHero({
-        name: 'Second SecretHero'
+        name: 'Second SecretHero',
+        codeName: '002'
       })
 
       secretHero1.save(function (err) {
@@ -125,9 +127,24 @@ describe('/secrethero', () => {
           throw err // Re-throw the error if the test should fail when an error happens
         })
     })
-    it('should return status code 200 and a list of secretHeroes when GET /secrethero with query parameter', () => {
+    it('should return status code 200 and a list of secretHeroes when GET /secrethero with query parameter on name', () => {
       return chai.request(url)
         .get('/api/secret/secretheroes?name=First')
+        .set('Authorization', 'Bearer ' + token)
+        .then(res => {
+          res.should.have.status(200)
+          res.should.be.json()
+          res.body.should.be.an('array')
+          res.body.length.should.equal(1)
+        })
+        .catch(err => {
+          console.error(err)
+          throw err // Re-throw the error if the test should fail when an error happens
+        })
+    })
+    it('should return status code 200 and a list of secretHeroes when GET /secrethero with query parameter on codeName', () => {
+      return chai.request(url)
+        .get('/api/secret/secretheroes?name=002')
         .set('Authorization', 'Bearer ' + token)
         .then(res => {
           res.should.have.status(200)

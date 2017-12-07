@@ -2,9 +2,12 @@ var SecretHero = require('../models/secrethero')
 
 module.exports = {
 
+/*
+{$or:[{firstName:{$regex: req.body.customerName, $options: 'i'}},{lastName:{$regex: req.body.customerName, $options: 'i'}}]}
+*/
   getSecretHeroes: function (req, res) {
     var secretHeroArray = []
-    SecretHero.find({name: new RegExp(req.query.name, 'm')}, function (err, secretHeroes) {
+    SecretHero.find({$or: [{name: new RegExp(req.query.name, 'm')}, {codeName: new RegExp(req.query.name, 'm')}]}, function (err, secretHeroes) {
       if (err) {
         return res.sendStatus(500)
       }

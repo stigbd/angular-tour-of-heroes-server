@@ -11,6 +11,7 @@ module.exports = mongoose.model('SecretHero', new Schema({
     unique: true
   },
   codeName: {
-    type: String
+    type: String,
+    index: true
   }
 }))

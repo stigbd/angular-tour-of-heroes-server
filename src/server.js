@@ -63,7 +63,7 @@ app.use('/', authCheck, secretHero)
 app.use(function (err, req, res, next) {
   if (err.name === 'UnauthorizedError') {
     res.status(401).send({'message': 'Invalid token'})
-    console.err(err)
+    console.error(err)
   }
   next(err)
 })
