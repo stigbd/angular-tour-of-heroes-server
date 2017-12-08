@@ -1,6 +1,12 @@
 version: "3"
 services:
-  server:
+  tour-of-heroes-server:
     build: .
     ports:
       - "3002:3002"
+    environment:
+      - DBHOST=heroes-database
+  heroes-database:
+    image: mongo
+    ports:
+      - "27017:27017"
