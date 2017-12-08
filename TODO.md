@@ -8,3 +8,4 @@
 -   [x] Refactor load into etl
 -   [ ] Improve test on updates
 -   [ ] Improve delete test documents in after-step
+-   [ ] Replace express-jwt with own code
