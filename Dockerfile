@@ -1,3 +1,5 @@
+# stigbd/heroes-service
+
 FROM node
 
 # Copy source code
